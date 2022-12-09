@@ -117,7 +117,7 @@
   </main> 
 
   <div class="basic-data">
-    #{{roomCode}}, Welcome {{username}}!,pNumber{{progressNum}}
+    #{{roomCode}}, Welcome {{username}}!
   </div> 
 
   <transition name="fade" >
