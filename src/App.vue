@@ -249,7 +249,7 @@
 
         skipFlag: false,
 
-        hands: [],
+        hands: [], 
 
         onlineStatus: undefined,
         isAdmin: false,
