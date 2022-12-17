@@ -19,7 +19,7 @@
       <div class="current-area">
         <div class="coinSum">
           <span >
-            <strong>{{currentCard?.balance}}</strong> coins
+            <strong style="font-size:85%;">{{currentCard?.balance}} coins</strong> 
           </span>
         </div>
         
@@ -43,7 +43,10 @@
           </div>
         </div>
 
-        <div class="coins">
+        
+      </div>
+
+      <div class="coins">
           <div class="coin-wrapper">
             <template v-for="(item,i) in currentCoinList" :key="i">
               <div class="coin-shape"></div>
@@ -53,7 +56,6 @@
           </div>
 
         </div>
-      </div>
 
       <!-- <div v-if="trashPile">
         <tempalte v-for="(card,i) in trashPile" :key="i">
@@ -65,22 +67,22 @@
 
     <div class="controller">
       <template v-if="winner == ''">
-        <span>I got {{myPlayer?.balance}} coins</span><br>
-        <div v-if="currentPlayer !== username">{{currentPlayer}}'s turn</div>
+        <span>You have <strong >{{myPlayer?.balance}} coins</strong> </span><br>
+        <div v-if="currentPlayer !== username"><strong style="color:red">{{currentPlayer}}'s</strong> turn now</div>
         <div v-else>
-          <div style="font-weight:bold; color:red">Your turn</div>
+          <div style="font-weight:bold; color:red">It's your turn</div>
           <button class="button" :disabled="(balance<= 0)" @click="pay()" style="background-color:GoldenRod;">Pay</button> &nbsp;
           <button class="button" @click="takeCard()">take</button> <br>
+          <!-- <button class="button" @click="test()">test</button> <br> -->
         </div>
 
       </template>
     </div>
 
     <div class="detail">
-      <strong style="color:#D6E4E5">Other players</strong> 
       <div class="detail-card-wrapper">
         <template v-for="(player,i) in reorderedList()" :key="i">
-          <div class="detail-card" >
+          <div class="detail-card" :style="getColor(player.name)">
             <img src="../public/pics/avatar.svg" alt="Avatar" >
             
             <div class="container">
@@ -642,7 +644,17 @@
 
       // -------------------
       test(){
-        this.cardDeckIndex++; 
+        // console.log('hgey')
+        // // this.cardDeckIndex++; 
+        // for(let i in this.players){
+        //   let player = this.players[i]
+        //   player.hands.push(this.currentCard)
+        //   player.hands.push(this.currentCard)
+        //   player.hands.push(this.currentCard)
+        //   player.hands.push(this.currentCard)
+        //   player.hands.push(this.currentCard)
+        //   player.hands.push(this.currentCard)
+        // }
 
       },
       shuffleDeck() {
@@ -743,6 +755,14 @@
             maxPoint = player.point
           }
         }
+      },
+
+      // -----------------------
+      getColor(name){
+        if(name == this.currentPlayer){
+          return 'background-color: gold'
+        }
+        return ''
       },
 
       sleep(ms) {
@@ -1057,7 +1077,7 @@
 
     background-color:#497174;
     width: 100%;
-    height: 22vh;
+    height: 20vh;
 
     /* height: 180px; */
     border-radius: 15px;
@@ -1071,16 +1091,19 @@
   .pile{
     position: absolute;
     top: 50%;
-    left: 15px;
+    left: 3%;
     transform: translateY(-50%);
 
     /* border: 2px solid black; */
-    height: 85%;
-    width: 75px;
+    aspect-ratio: 65/89;
+    /* height: 85%; */
+    width: 25%;
+    /* max-height: 100%; */
 
 
-    background: #497174;
+    /* background: #497174; */
     /* aspect-ratio: 65/89; */
+    /* background-color: red; */
     /* width: 90px; */
     /* height: 125px; */
     border-radius: 8px;
@@ -1091,7 +1114,7 @@
     left: 50%;
     transform: translateX(-50%);
     /* background: #497174; */
-    top: 20px;
+    top: 0px;
 
     width: 100%;
     border-radius: 4px;
@@ -1102,17 +1125,19 @@
 
   .pile .card{
     position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     bottom: 0%;
     background-color: #EFF5F5;
     aspect-ratio: 65/89;
-    width: 75px;
-    height: 95px;
+    width: 75%;
+    /* height: 95px; */
     border-radius: 8px;
 
     
   }
 
-  .pile .card-back{
+  .pile .card .card-back{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -1120,15 +1145,13 @@
 
 
     background-color: #2B3A55;
-    width: 68px;
-    height: 88px;
+    /* aspect-ratio: 65/89; */
+    width: 90%;
+    height: 92.5%;
+    /* height: 100; */
     border-radius: 8px;
   }
 
-
-  
-
-  
   .card-back i{
     position: absolute;
     top: 50%;
@@ -1152,15 +1175,19 @@
   .current-area{
     position: absolute;
     top: 50%;
-    right: 15px;
+    /* right: 15px; */
+    left: 30%;
     transform: translateY(-50%);
 
     /* border: 2px solid black; */
-    height: 85%;
-    width: 220px;
+    aspect-ratio: 65/89;
+    /* height: 85%; */
+    width: 33%;
+    /* max-height: 100%; */
 
 
-    background: #497174;
+    /* background: #497174; */
+    /* background-color: red; */
     /* aspect-ratio: 65/89; */
     /* width: 90px; */
     /* height: 125px; */
@@ -1171,12 +1198,12 @@
     position: absolute;
     left: 50%;
     color: #D6E4E5;
-    /* transform: translateX(-50%); */
+    transform: translateX(-50%);
     /* background: #497174; */
     top: 0px;
-    left: 0px;
+    /* left: 0p; */
 
-    width: 90px;
+    /* width: 90px; */
     border-radius: 4px;
     /* color: #EFF5F5; */
     /* margin-top: 20px; */
@@ -1184,15 +1211,15 @@
 
   .current-area .card{
     position: absolute;
-    bottom: 0%;
-    /* : 50%;
-    transform: translateY(-50%); */
+    bottom:5%;
+    left: 50%;
+    transform: translateX(-50%); 
 
 
     background-color: #EFF5F5;
     aspect-ratio: 65/89;
-    width: 90px;
-    height: 120px;
+    width: 80%;
+    /* height: 120px; */
     border-radius: 8px;
 
     
@@ -1249,16 +1276,17 @@
 
   }
 
+
+
   .coins{
     position: absolute;
-    right: 50%;
-    /* transform: translateX(-50%); */
+    transform: translateY(-50%);
     background: #D6E4E5;
-    top: 0px;
-    right: 0px;
+    top: 50%;
+    right:5%;
 
-    width: 110px;
-    height: 100%;
+    width: 30%;
+    height: 85%;
     border-radius: 5px;
     /* color: #EFF5F5; */
     /* margin-top: 20px; */
@@ -1331,14 +1359,17 @@
     -webkit-box-shadow: 10px 14px 36px -2px rgba(0, 0, 0, 0.59);
     -ms-box-shadow: 10px 14px 36px -2px rgba(0, 0, 0, 0.59);
     box-shadow: 10px 14px 36px -2px rgba(0, 0, 0, 0.59);
+
+    transition: all 1s;
   }
 
   .detail-card-wrapper {
     width:95%;
-    margin: auto auto;
+    /* margin: 10px auto; */
     display: flex;
     justify-content: space-around;
-    margin: 5px auto;
+    margin: 10px auto;
+    padding: 10px;
     flex-flow: row wrap;
 
   }
@@ -1379,8 +1410,8 @@
   }
 
   .detail-card img{
-    width: 30px;
-    margin: 0px;
+    width: 20px;
+    margin: -5px auto -8px; 
     border-radius: 5px 5px 0 0;
   }
 
