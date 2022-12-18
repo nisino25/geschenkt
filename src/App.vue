@@ -71,7 +71,7 @@
         <div v-if="currentPlayer !== username"><strong style="color:red">{{currentPlayer}}'s</strong> turn now</div>
         <div v-else>
           <div style="font-weight:bold; color:red">It's your turn</div>
-          <button class="button" :disabled="(balance<= 0)" @click="pay()" style="background-color:GoldenRod;">Pay</button> &nbsp;
+          <button :style="[myPlayer?.balance <= 0 ? 'background-color:GoldenRod; opacity: 0.4' : '' ]" class="button" :disabled="(myPlayer.balance<= 0)" @click="pay()" style=";">Pay</button> &nbsp;
           <button class="button" @click="takeCard()">take</button> <br>
           <!-- <button class="button" @click="test()">test</button> <br> -->
         </div>
