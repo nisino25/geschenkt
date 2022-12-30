@@ -1,27 +1,23 @@
-<template>
-  <main class="wrapper" v-if="progressNum !== 0">
+<template >
+  <body > 
+    <main class="wrapper" v-if="progressNum !== 0" >
 
     <div class="playArea">
 
       <div class="pile">
         <div class="remainNum">
           <span>
-            <strong>{{remainNum}}</strong> left
+            <strong style="font-size: 250%; transition: all 1.5s;" :style="[showingRemainNum <= 5 ? 'color: OrangeRed' : '']">{{showingRemainNum}}</strong> <br> left
           </span>
         </div>
-        <div class="card">
+        <div class="card"  v-if="showingRemainNum > 0">
           <div class="card-back">
-            <i class='fas fa-award'></i>
           </div>
         </div>
       </div>
 
       <div class="current-area">
-        <div class="coinSum">
-          <span >
-            <strong style="font-size:85%;">{{currentCard?.balance}} coins</strong> 
-          </span>
-        </div>
+        
         
         <div class="card" v-if="currentCard">
           <div class="card-front">
@@ -40,6 +36,8 @@
               </div>
               <div class="mainNum">{{currentCard.num}}</div>
             </div>
+
+            <div class="half-line"></div>
           </div>
         </div>
 
@@ -50,10 +48,17 @@
           <div class="coin-wrapper">
             <template v-for="(item,i) in currentCoinList" :key="i">
               <div class="coin-shape"></div>
-              <div crlass="line-break" v-if="(i -0)% 5 == 0"></div>
+              <div crlass="line-break" v-if="(i -0)% 5 == 0 "></div>
 
             </template>
+            
+            <div class="coinSum">
+              <span>
+                <strong>{{currentCard?.balance}}</strong> 
+              </span>
+            </div>
           </div>
+          
 
         </div>
 
@@ -94,7 +99,7 @@
                 <div class="badge-wrapper">
                   <template v-for="(item,i) in theirList(player.name)" :key=i>
                   
-                    <div class="badge">
+                    <div class="badge" :style="[listForColoring(player.name).includes(item.num -1) ? 'background-color:darkgrey' : '']">
                       {{item.num}}
                     </div>
 
@@ -111,18 +116,25 @@
       </div>
     </div>
 
-    
 
 
 
 
-  </main> 
 
-  <div class="basic-data">
-    #{{roomCode}}, Welcome {{username}}!
-  </div> 
+    </main> 
 
-  <transition name="fade" >
+    <div class="basic-data">
+      <span>#{{roomCode}}, Welcome {{username}}!</span>
+      
+    </div> 
+
+    <div class="basic-buttons">
+      <span style="float:right;transition: all 1.5s;" @click="audioStatus = !audioStatus"><i class="fas " :class="[audioStatus ? 'fa-volume-up': 'fa-volume-mute']"></i></span>
+    </div> 
+
+   
+
+    <transition name="fade" >
     <div class='modal-overlay fade-in' v-if="showModal" style="height: 100vh">
       
         <div class="modal" style=" transition : all 0.6s ease 0s;">
@@ -137,17 +149,19 @@
               <span v-if="modalWarning" class="warning">{{modalWarning}}</span>
               <button @click="signUp()" class="create" >Sign Up</button>
               <button @click="generateRandomUsername()" class="join" >Random name</button>
+              <!-- <button @click="test()">test</button> -->
 
             </form>
           </div>
 
           <div v-if="modalStatus == 2">
-            <form onsubmit="event.preventDefault()">
+            <form onsubmit="event.preventDefault()" @submit="joinARoom()">
               <button @click="createARoom()" class="create" >Create a Room</button>
               OR<br>
               <label>Room Code</label>
-              <input type="number" placeholder="Type room code.." v-model="roomCode"  autocapitalize="none" >
+              <input type="number" placeholder="Type room code.." v-model="roomCode"   >
               <button @click="joinARoom()" class="join">Join a Room</button>
+              <button @click="test()">test</button>
 
             </form>
           </div>
@@ -178,21 +192,21 @@
           </div>
 
           <div v-if="modalStatus == 20 " style="color:black; text-align:left" class='summary'>
-            Winner is <strong style="color: crimson; font-size: 125%">{{winner}}!</strong>
+            Winner is <strong style="color: crimson; font-size: 150%">{{winner}}!</strong><br><br>
             <hr>
-            <template v-for="(player,i) in reorderedList()" :key=i>
-              <span>{{player.name}}: <strong>{{player.point}}pt</strong>   ({{player.balance}}pt from coins) {{player.penalty}} for the penalty</span>
+            <template v-for="(player,i) in scoreBasedList()" :key=i>
+              <span><strong>{{i+1}}.</strong> {{player.name}}: <strong>{{player.point}}pt</strong> <br>&nbsp;&nbsp;&nbsp;  {{player.balance}}pt from coins, {{player.penalty}} for the penalty</span><br><br>
               <div class="badge-wrapper">
                   <template v-for="(item,i) in theirList(player.name)" :key=i>
                   
-                    <div class="badge" style="width: 19%">
+                    <div class="badge" style="width: 19%" :style="[listForColoring(player.name).includes(item.num -1) ? 'background-color:darkgrey' : '']">
                       {{item.num}}
                     </div>
 
                     <div crlass="line-break" v-if="(i -1)% 3 == 0"></div>
                   </template>
                 </div>
-               <br>
+              <br>
             </template>
 
             <button @click="(showModal = false)" class="button">Close</button>
@@ -201,7 +215,7 @@
             
           </div>
 
-         
+        
 
           
 
@@ -211,7 +225,10 @@
         </div>
     </div>
 
-  </transition>
+    </transition>
+      
+  </body>
+  
 
 </template>
 
@@ -223,6 +240,11 @@
   let randomWords = require('random-words');
   import { copyText } from 'vue3-clipboard';
 
+  // var coinSound= new Audio(`../public/audio/coinSound.wav`);
+  // import sound from '../assets/sound.mp3'
+  // const audio = new Audio(coinSound)
+
+  
   export default {
     name: 'App',
 
@@ -266,6 +288,13 @@
         // balance: 11,
 
         winner:'',
+
+
+        previousCard: undefined,
+
+        audioStatus: true,
+        coin_audio: new Audio(require('@/assets/sounds/coin_sound.wav')),
+        collecting_audio: new Audio(require('@/assets/sounds/collecting_sound.wav')),
       }
     },
     mounted(){
@@ -275,6 +304,8 @@
       if(this.developing) this.generateRandomUsername()
 
       this.shuffleDeck()
+
+
     },
 
     methods:{
@@ -341,10 +372,15 @@
         this.modalStatus++
       },
       createARoom(){
+        // console.log()
+        if(this.roomCode > 0) return 
+
         this.isHost = true
         this.warning = undefined
         let result = this.generateRoomCode()
         this.skipFlag = false
+
+      
         
 
         let r= confirm(`Are you ready to create a room "${result}"?`);
@@ -644,17 +680,24 @@
 
       // -------------------
       test(){
-        // console.log('hgey')
-        // // this.cardDeckIndex++; 
-        // for(let i in this.players){
-        //   let player = this.players[i]
-        //   player.hands.push(this.currentCard)
-        //   player.hands.push(this.currentCard)
-        //   player.hands.push(this.currentCard)
-        //   player.hands.push(this.currentCard)
-        //   player.hands.push(this.currentCard)
-        //   player.hands.push(this.currentCard)
+        
+        // console.log('testint')
+        // var exec = require('child_process').exec
+        // var path = require('path')
+        // var cmd = path.join(__dirname, 'hapticJS', 'DerivedData', 'hapticJS', 'Build', 'Products', 'Release', 'hapticJS')
+
+        // exports.vibrate = function() {
+        //   // if (os.platform().includes('darwin')) {
+        //     console.log('vibrating now...')
+        //     exec(cmd, function() {
+        //       // command output is in stdout
+        //     })
+        //   // }
+
         // }
+
+        // hapticjs.vibrate()
+        // hapticsVibrate()
 
       },
       shuffleDeck() {
@@ -709,6 +752,24 @@
         return tempList
 
       },
+      listForColoring(name){
+        let list = []
+        for(let i in this.cardDeck){
+          list.push(this.cardDeck[i])
+        }
+
+        list.sort((a,b) => a.num - b.num);
+
+        let tempList =[]
+        for(let i in list){
+          if(list[i].location == name){
+            tempList.push(list[i].num)
+          }
+        }
+
+        return tempList
+
+      },
       reorderedList(){
         let list = []
         for(let i in this.players){
@@ -716,6 +777,18 @@
         }
 
         list.sort((a,b) => a.index - b.index);
+
+        return list
+      },
+
+      scoreBasedList(){
+        let list = []
+        for(let i in this.players){
+          list.push(this.players[i])
+        }
+
+        list.sort((a,b) => a.point - b.point);
+        list.reverse()
 
         return list
       },
@@ -814,7 +887,14 @@
           }
         }
 
+
         return count 
+      },
+      showingRemainNum(){
+        if(!this.remainNum) return
+        let num = this.remainNum
+        num--
+        return num--
       },
       trashPile(){
         if(this.cardDeck.length < 1) return false
@@ -867,15 +947,43 @@
         }
       },
       players(){
+        
         // console.log('chanigin players')
       },
 
       async remainNum(){
+        if(this.audioStatus) this.collecting_audio.play()
         if(this.remainNum == 0){
           await this.sleep(2000)
           this.finishGame()
         }
-      }
+      },
+
+      
+      async currentPlayer(){
+        console.log('cahging')
+
+        if(!this.previousCard){
+          this.previousCard = this.currentCard
+        }else {
+          if(this.audioStatus) this.coin_audio.play()
+        }
+        // coinSound.play();
+        // if(this.myPlayer.name == this.currentPlayer){
+        //   const hapticsVibrate = async () => {
+        //     await Haptics.vibrate();
+        //   };
+
+        //   hapticsVibrate()
+        //   // window.navigator.vibrate(300);
+        //   // alert('same name')
+
+        // }
+        
+
+          // await hapticsVibrate()
+      },
+
     },
   }
 </script>
@@ -890,6 +998,8 @@
     color: #2c3e50;
 
     margin-top: 10px;
+
+    touch-action: manipulation;
 
   }
   
@@ -1112,25 +1222,28 @@
   .pile .remainNum{
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    transform: translate(-50%,-50%);
     /* background: #497174; */
-    top: 0px;
+    /* top: 0px; */
 
     width: 100%;
     border-radius: 4px;
 
     color: #D6E4E5;
+    z-index: 10;
     /* margin-top: 20px; */
   }
 
   .pile .card{
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    transform: translate(-50%,-50%);
     bottom: 0%;
     background-color: #EFF5F5;
     aspect-ratio: 65/89;
-    width: 75%;
+    width: 85%;
     /* height: 95px; */
     border-radius: 8px;
 
@@ -1150,24 +1263,6 @@
     height: 92.5%;
     /* height: 100; */
     border-radius: 8px;
-  }
-
-  .card-back i{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-
-    /* width: 50px;
-    height: auto; */
-    font-size: 40px;
-
-
-
-    background-color: inherit;
-    color: #EFF5F5;
-    /*  */
-    /* filter: invert(98%) sepia(65%) saturate(4709%) hue-rotate(179deg) brightness(116%) contrast(92%); */
   }
 
   
@@ -1194,26 +1289,13 @@
     border-radius: 8px;
   }
 
-  .coinSum{
-    position: absolute;
-    left: 50%;
-    color: #D6E4E5;
-    transform: translateX(-50%);
-    /* background: #497174; */
-    top: 0px;
-    /* left: 0p; */
-
-    /* width: 90px; */
-    border-radius: 4px;
-    /* color: #EFF5F5; */
-    /* margin-top: 20px; */
-  }
+  
 
   .current-area .card{
     position: absolute;
-    bottom:5%;
+    top:50%;
     left: 50%;
-    transform: translateX(-50%); 
+    transform: translate(-50%,-50%); 
 
 
     background-color: #EFF5F5;
@@ -1228,6 +1310,7 @@
   
 
   .card-front{
+    /* position: relative */
     /* position: absolute;
     top: 50%;
     left: 50%;
@@ -1248,6 +1331,7 @@
     height: 50%;
     
     filter: saturate(50%);
+    ; 
     /* background-color: green; */
   }
 
@@ -1262,6 +1346,8 @@
     border-radius: 8px 8px 0px 0px;
     filter: saturate(5);
     font-weight: bold;
+
+    -webkit-text-stroke: 0.5px darkgrey;
     /* text-shadow:  0 0.5px 0 #000, -0.5px 0 0 #000; */
   }
 
@@ -1274,6 +1360,19 @@
     color: #D6E4E5;
     font-size:28px;
 
+  }
+
+  .half-line{
+    position: absolute;
+    z-index: 100;
+    top: -50%;
+    left: -50%;
+    transform: translate(-50%,-50%);
+
+
+    height: 10px;
+    width: 100%;
+    background-color: black;
   }
 
 
@@ -1300,6 +1399,8 @@
     margin: 5px auto;
     flex-flow: row wrap;
 
+    z-index: 10;
+
   }
 
   .coin-shape{
@@ -1311,6 +1412,21 @@
     background-color: GoldenRod;
     margin: 5px auto;
 
+  }
+
+  .coinSum{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+
+    font-size:500%;
+
+    /* background: white; */
+    padding: 2px 5px;
+    opacity: 0.45;
+
+    z-index: 9;
   }
 
   /* ---------------------------------------- */
@@ -1453,7 +1569,14 @@
   /* ---------------------------------------- */
   .basic-data{
     position: absolute;
-    left: 10px;
+    left: 20px;
+    bottom: 30px;
+
+  }
+
+  .basic-buttons{
+    position: absolute;
+    right: 20px;
     bottom: 30px;
 
   }
