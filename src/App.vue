@@ -1,4 +1,4 @@
-<template >
+<template>
   <body > 
     <main class="wrapper" v-if="progressNum !== 0" >
 
@@ -129,7 +129,7 @@
     </div> 
 
     <div class="basic-buttons">
-      <span style="float:right;transition: all 1.5s;" @click="audioStatus = !audioStatus"><i class="fas " :class="[audioStatus ? 'fa-volume-up': 'fa-volume-mute']"></i></span>
+      <span style="float:right;transition: all 1.5s;" @click="audioStatus = !audioStatus"><i class="fa" :class="[audioStatus ? 'fa-volume-up': 'fa-volume-off']"></i></span>
     </div> 
 
    
