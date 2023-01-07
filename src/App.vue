@@ -129,101 +129,105 @@
     </div> 
 
     <div class="basic-buttons">
+      <i class="fa fa-refresh" onclick="location.reload();"></i> &nbsp;
       <span style="float:right;transition: all 1.5s;" @click="audioStatus = !audioStatus"><i class="fa" :class="[audioStatus ? 'fa-volume-up': 'fa-volume-off']"></i></span>
     </div> 
 
    
 
     <transition name="fade" >
-    <div class='modal-overlay fade-in' v-if="showModal" style="height: 100vh">
-      
-        <div class="modal" style=" transition : all 0.6s ease 0s;">
-          
-          
-          <div v-if="modalStatus == 1">
-            <form onsubmit="event.preventDefault()">
 
-              <label>Username</label>
-              <input type="text" placeholder="Type username.." v-model="username" >
-
-              <span v-if="modalWarning" class="warning">{{modalWarning}}</span>
-              <button @click="signUp()" class="create" >Sign Up</button>
-              <button @click="generateRandomUsername()" class="join" >Random name</button>
-              <!-- <button @click="test()">test</button> -->
-
-            </form>
-          </div>
-
-          <div v-if="modalStatus == 2">
-            <form onsubmit="event.preventDefault()" @submit="joinARoom()">
-              <button @click="createARoom()" class="create" >Create a Room</button>
-              OR<br>
-              <label>Room Code</label>
-              <input type="number" placeholder="Type room code.." v-model="roomCode"   >
-              <button @click="joinARoom()" class="join">Join a Room</button>
-              <button @click="test()">test</button>
-
-            </form>
-          </div>
-
-          <div v-if="modalStatus == 3">
-            <form onsubmit="event.preventDefault()">
-              <span>Welcome {{username}} !</span><br>
-              <span>Currently {{members.length}}/9</span><br>
-                <span>Room Code: <strong style="font-size:175%">{{roomCode}}</strong></span><br>
-
-                <button v-if="onlineRoll == 'host'" :style="[members.length >= 3 ? '' : 'opacity: 0.2']" @click="closeTheRoom" class="closeButton">Close the Room</button><br>
-
-                <div v-if="onlineStatus == 'waiting'" class="loader"></div>
-
-                <button v-if="!members?.includes(username)"  @click="joinARoom" class="closeButton">Try again</button>
-
-                <br>
-
-                <!-- <samp>{{members}}</samp> -->
-
-                <template v-for="(player,index) in members" :key="index" style="text-align:left">
-                  <span :style="username==player ? 'color:red' : ''">{{index+1}}. {{player}}</span><br>
-
-                </template>
-
-                
-            </form>
-          </div>
-
-          <div v-if="modalStatus == 20 " style="color:black; text-align:left" class='summary'>
-            Winner is <strong style="color: crimson; font-size: 150%">{{winner}}!</strong><br><br>
-            <hr>
-            <template v-for="(player,i) in scoreBasedList()" :key=i>
-              <span><strong>{{i+1}}.</strong> {{player.name}}: <strong>{{player.point}}pt</strong> <br>&nbsp;&nbsp;&nbsp;  {{player.balance}}pt from coins, {{player.penalty}} for the penalty</span><br><br>
-              <div class="badge-wrapper">
-                  <template v-for="(item,i) in theirList(player.name)" :key=i>
-                  
-                    <div class="badge" style="width: 19%" :style="[listForColoring(player.name).includes(item.num -1) ? 'background-color:darkgrey' : '']">
-                      {{item.num}}
-                    </div>
-
-                    <div crlass="line-break" v-if="(i -1)% 3 == 0"></div>
-                  </template>
-                </div>
-              <br>
-            </template>
-
-            <button @click="(showModal = false)" class="button">Close</button>
-
-            
-            
-          </div>
-
+      <div class='modal-overlay fade-in' v-if="showModal" style="height: 100vh">
         
+          <div class="modal" style=" transition : all 0.6s ease 0s;">
+            
+            
+            <div v-if="modalStatus == 1">
+              <form onsubmit="event.preventDefault()">
+
+                <label>Username</label>
+                <input type="text" placeholder="Type username.." v-model="username" >
+
+                <span v-if="modalWarning" class="warning">{{modalWarning}}</span>
+                <button @click="signUp()" class="create" >Sign Up</button>
+                <button @click="generateRandomUsername()" class="join" >Random name</button>
+                <!-- <button @click="test()">test</button> -->
+
+              </form>
+            </div>
+
+            <div v-if="modalStatus == 2">
+              <form onsubmit="event.preventDefault()" @submit="joinARoom()">
+                <button @click="createARoom()" class="create" >Create a Room</button>
+                OR<br>
+                <label>Room Code</label>
+                <input type="number" placeholder="Type room code.." v-model="roomCode"   >
+                <button @click="joinARoom()" class="join">Join a Room</button>
+                <button @click="test()">test</button>
+
+              </form>
+            </div>
+
+            <div v-if="modalStatus == 3">
+              <form onsubmit="event.preventDefault()">
+                <span>Welcome {{username}} !</span><br>
+                <span>Currently {{members.length}}/9</span><br>
+                  <span>Room Code: <strong style="font-size:350%;color: RebeccaPurple;">{{roomCode}}</strong></span><br>
+
+                  <button v-if="onlineRoll == 'host'" :style="[members.length >= 3 ? '' : 'opacity: 0.2']" @click="closeTheRoom" class="closeButton">Close the Room</button><br>
+
+                  <div v-if="onlineStatus == 'waiting'" class="loader"></div>
+
+                  <button v-if="!members?.includes(username)"  @click="joinARoom" class="closeButton">Try again</button>
+
+                  <br>
+
+                  <!-- <samp>{{members}}</samp> -->
+
+                  <template v-for="(player,index) in members" :key="index" style="" >
+                    <span  :style="username==player ? 'color:red' : ''">{{index+1}}. {{player}}</span><br>
+
+                  </template>
+
+                  
+              </form>
+            </div>
+
+            <div v-if="modalStatus == 20 " style="color:black; text-align:left; " class='summary'>
+              Winner is <strong style="color: crimson; font-size: 150%">{{winner}}!</strong><br>
+              <hr>
+              <br>
+              <template v-for="(player,i) in scoreBasedList()" :key=i>
+                <span><strong>{{i+1}}.</strong> {{player.name}}: <strong>{{player.point}}pt</strong> <br>&nbsp;&nbsp;&nbsp;  {{player.balance}}pt from coins, {{player.penalty}} for the penalty</span><br><br>
+                <div class="badge-wrapper">
+                    <template v-for="(item,i) in theirList(player.name)" :key=i>
+                    
+                      <div class="badge" style="width: 19%" :style="[listForColoring(player.name).includes(item.num -1) ? 'background-color:darkgrey' : '']">
+                        {{item.num}}
+                      </div>
+
+                      <div crlass="line-break" v-if="(i -1)% 3 == 0"></div>
+                    </template>
+                </div>
+                
+              </template>
+              <br>
+
+              <button @click="(showModal = false)" class="button">Close</button>
+
+              
+              
+            </div>
 
           
 
-          
+            
+
+            
 
 
-        </div>
-    </div>
+          </div>
+      </div>
 
     </transition>
       
@@ -304,6 +308,13 @@
       if(this.developing) this.generateRandomUsername()
 
       this.shuffleDeck()
+
+      if(!this.developing){
+
+        window.onbeforeunload = function() {
+          return "Data will be lost if you leave the page, are you sure?";
+        };
+      }
 
 
     },
@@ -833,6 +844,9 @@
       // -----------------------
       getColor(name){
         if(name == this.currentPlayer){
+          if(name == this.myPlayer.name){
+            return 'background-color: DeepSkyBlue'
+          }
           return 'background-color: gold'
         }
         return ''
@@ -989,6 +1003,7 @@
 </script>
 
 <style>
+
   #app {
     background-color: #D6E4E5;
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -1000,6 +1015,12 @@
     margin-top: 10px;
 
     touch-action: manipulation;
+
+    /* max-height: 100vh; */
+    /* max-width: 100vw; */
+    /* overflow: hidden;
+    position: fixed; */
+
 
   }
   
@@ -1045,8 +1066,13 @@
     max-width: 400px;
     background-color: #f2f2f2;
     border-radius: 16px;
+
     
     padding: 25px;
+    height: auto; 
+    max-height: 85vh;
+    overflow: auto;
+
   }
   .modal h1 {
     color: #222;
