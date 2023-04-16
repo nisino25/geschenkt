@@ -174,7 +174,7 @@
                 <span>Currently {{members.length}}/9</span><br>
                   <span>Room Code: <strong style="font-size:350%;color: RebeccaPurple;">{{roomCode}}</strong></span><br>
 
-                  <button v-if="onlineRoll == 'host'" :style="[members.length >= 3 ? '' : 'opacity: 0.2']" @click="closeTheRoom" class="closeButton">Close the Room</button><br>
+                  <button v-if="onlineRoll == 'host'" :style="[members.length >= 2 ? '' : 'opacity: 0.2']" @click="closeTheRoom" class="closeButton">Close the Room</button><br>
 
                   <div v-if="onlineStatus == 'waiting'" class="loader"></div>
 
@@ -460,7 +460,7 @@
 
       },
       closeTheRoom(){
-        if(this.members.length <3) return
+        if(this.members.length <2) return
 
         this.multiAssignRoles()
 
